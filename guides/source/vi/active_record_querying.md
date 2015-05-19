@@ -1,28 +1,28 @@
-**DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON http://guides.rubyonrails.org.**
+** Không nên đọc file này trên GITHUB,  Các hướng dẫn phiên bản tiếng Việt được công khai trên trang  http://railsguides.tranhuychung.com. **
 
 Active Record Query Interface
 =============================
 
-This guide covers different ways to retrieve data from the database using Active Record.
+Hướng dẫn này bao gồm các cách thức khác nhau để lấy dữ liệu từ database sử dụng Active Record.
 
-After reading this guide, you will know:
+Sau khi đọc hướng dẫn này, bạn sẽ biết: 
 
-* How to find records using a variety of methods and conditions.
-* How to specify the order, retrieved attributes, grouping, and other properties of the found records.
-* How to use eager loading to reduce the number of database queries needed for data retrieval.
-* How to use dynamic finders methods.
-* How to use method chaining to use multiple ActiveRecord methods together.
-* How to check for the existence of particular records.
-* How to perform various calculations on Active Record models.
-* How to run EXPLAIN on relations.
+* Cách thức tìm các bản ghi sử dụng các method và điều kiện khác nhau.
+* Cách thức xác định thứ tự, lấy ra các thuộc tính, grouping, và and other properties of the found records.
+* Cách thức sử dụng kỹ thuật eager loading để giảm thiểu số lượng truy vấn vào database cần thiết  để lấy dữ liệu. 
+* Cách sử dụng dynamic finders methods.
+* Cách dùng method chaining để dùng kết hợp các phương thức của ActiveRecord.
+* Cách kiểm tra sự tồn tại của bản ghi xác định. 
+* Cách thực hiện các tính toán khác nhau trên Active Record models.
+* Cách chạy EXPLAIN trên các quan hệ.
 
 --------------------------------------------------------------------------------
 
-If you're used to using raw SQL to find database records, then you will generally find that there are better ways to carry out the same operations in Rails. Active Record insulates you from the need to use SQL in most cases.
+Nếu bạn đang thường sử dụng raw SQL để tìm database records, bạn sẽ thấy rằng có cách tốt hơn để làm điều đó trong Rails. Active Record giúp bạn không cần dùng đến các câu lệnh SQL trong hầu hết các trường hợp.
 
-Code examples throughout this guide will refer to one or more of the following models:
+Các ví dụ trong hướng dẫn này sẽ tham chiếu tới một trong các models dưới đây:
 
-TIP: All of the following models use `id` as the primary key, unless specified otherwise.
+TIP: Các models dưới đây dùng `id` là khoá chính, trừ khi có chỉ định các trường khác làm khoá chính.
 
 ```ruby
 class Client < ActiveRecord::Base
@@ -50,14 +50,14 @@ class Role < ActiveRecord::Base
 end
 ```
 
-Active Record will perform queries on the database for you and is compatible with most database systems (MySQL, PostgreSQL and SQLite to name a few). Regardless of which database system you're using, the Active Record method format will always be the same.
+Active Record sẽ thực hiện các truy vấn vào database giúp bạn, và tương thích với hầu hết các hệ quản trị cơ sở dữ liệu (MySQL, PostgreSQL, SQLite ...). Bất kể là hệ quản trị cơ sở dữ liệu nào bạn đang dùng, các phương thức của Active luôn như nhau. 
 
-Retrieving Objects from the Database
+Lấy các đối tượng từ Database 
 ------------------------------------
 
-To retrieve objects from the database, Active Record provides several finder methods. Each finder method allows you to pass arguments into it to perform certain queries on your database without writing raw SQL.
+Để lấy các đối tượng (objects) từ cơ sở dữ liệu, Active Record cung cấp mỗi số phương thức.Mỗi phương thức tìm kiếm chấp nhận các tham số được truyền vào bên trong để thực hiện các truy vấn tương ứng trong cơ sở dữ liệu thay vì viết các raw SQL.
 
-The methods are:
+Các phương thức bao gồm:
 
 * `bind`
 * `create_with`
@@ -83,71 +83,69 @@ The methods are:
 * `uniq`
 * `where`
 
-All of the above methods return an instance of `ActiveRecord::Relation`.
+Toàn bộ các phương thức trên trả về một thực thể (instance) của lớp  `ActiveRecord::Relation`.
 
-The primary operation of `Model.find(options)` can be summarized as:
+Các thao tác chính của  `Model.find(options)` có thể được tóm tắt như :
 
-* Convert the supplied options to an equivalent SQL query.
-* Fire the SQL query and retrieve the corresponding results from the database.
-* Instantiate the equivalent Ruby object of the appropriate model for every resulting row.
-* Run `after_find` and then `after_initialize` callbacks, if any.
+* Chuyển đổi các tuỳ chọn được cung cấp thành câu lệnh SQL query tương ứng. 
+* Fire các truy vấn SQL  và lấy kết quả tương ứng từ database.
+* Khởi tạo các đối tượng Ruby  tương ứng với các model cho mỗi  bản ghi kết quả từ database.
+* Chạy `after_find`   và sau đó là `after_initialize` callbacks, nếu có.
 
-### Retrieving a Single Object
+###  Lấy một Object đơn từ Database
 
-Active Record provides several different ways of retrieving a single object.
+Active Record cung cấp một số cách khác nhau để lấy một object đơn.
 
 #### `find`
 
-Using the `find` method, you can retrieve the object corresponding to the specified _primary key_ that matches any supplied options. For example:
+Sử dụng phương thức  `find`, bạn có thể lấy được object tương ứng với  khoá chính ( đã được chỉ định) phù hợp với các tuỳ chọn được cung cấp. Ví dụ:
 
 ```ruby
-# Find the client with primary key (id) 10.
+#  Tìm client với khoá chính (id) 10
 client = Client.find(10)
 # => #<Client id: 10, first_name: "Ryan">
 ```
 
-The SQL equivalent of the above is:
+Câu lệnh SQL tương ứng với lệnh ở trên:
 
 ```sql
 SELECT * FROM clients WHERE (clients.id = 10) LIMIT 1
 ```
 
-The `find` method will raise an `ActiveRecord::RecordNotFound` exception if no matching record is found.
+Phương thức  `find`  sẽ raise  `ActiveRecord::RecordNotFound` exception nếu như không có object nào được tìm thấy.
 
-You can also use this method to query for multiple objects. Call the `find` method and pass in an array of primary keys. The return will be an array containing all of the matching records for the supplied _primary keys_. For example:
+Nếu bạn dùng phương thức này để tìm nhiều objects ( multiple objects) .Gọi phương thức `find` và truyền vào các một mảng các gía trị của khoá chính.  Giá trị trả về sẽ là một mảng các bản ghi  tương ứng với  giá trị khoá chính được chỉ định. Ví dụ:
 
 ```ruby
-# Find the clients with primary keys 1 and 10.
+# Tìm các client với khoá chính là 1 và 10 
 client = Client.find([1, 10]) # Or even Client.find(1, 10)
 # => [#<Client id: 1, first_name: "Lifo">, #<Client id: 10, first_name: "Ryan">]
 ```
-
-The SQL equivalent of the above is:
+Câu lệnh SQL tương ứng với lệnh trên: 
 
 ```sql
 SELECT * FROM clients WHERE (clients.id IN (1,10))
 ```
 
-WARNING: The `find` method will raise an `ActiveRecord::RecordNotFound` exception unless a matching record is found for **all** of the supplied primary keys.
+WARNING:  Phương thức The `find` sẽ raise  `ActiveRecord::RecordNotFound` exception  trừ khi a matching record is found for **all** of the supplied primary keys.
 
 #### `take`
-
-The `take` method retrieves a record without any implicit ordering. For example:
+Phương thức  `take`  sẽ lấy một bản ghi mà không theo bất cứ trật tự ẩn nào.Ví dụ:
 
 ```ruby
 client = Client.take
 # => #<Client id: 1, first_name: "Lifo">
 ```
 
-The SQL equivalent of the above is:
+Câu lệnh SQL tương ứng với lệnh trên:
 
 ```sql
 SELECT * FROM clients LIMIT 1
 ```
 
-The `take` method returns `nil` if no record is found and no exception will be raised.
+Phương thức  `take`  trả về giá trị `nil`  nếu không có bản ghi nào được tìm thấy và không raise exception.
 
-You can pass in a numerical argument to the `take` method to return up to that number of results. For example
+Bạn có thể truyền vào một tham số dạng số (numeric agrument )vào phương thức `take`  để trả về các bản ghi được giới hạn với số lượng tương ứng.Ví dụ:
 
 ```ruby
 client = Client.take(2)
@@ -157,34 +155,34 @@ client = Client.take(2)
 ]
 ```
 
-The SQL equivalent of the above is:
+Câu lệnh SQL tương ứng với lệnh trên:
 
 ```sql
 SELECT * FROM clients LIMIT 2
 ```
 
-The `take!` method behaves exactly like `take`, except that it will raise `ActiveRecord::RecordNotFound` if no matching record is found.
+Phương thức  `take!` cũng giống như  `take`, điểm khác là phương thức `take!` sẽ raise `ActiveRecord::RecordNotFound` nếu không có bản ghi nào được tìm thấy.
 
-TIP: The retrieved record may vary depending on the database engine.
+TIP: Bản ghi trả về có thể sẽ khác nhau phụ thuộc vào database engine.
 
 #### `first`
 
-The `first` method finds the first record ordered by the primary key. For example:
+Phương thức  `first` tìm bản ghi đầu tiên được sắp xếp theo khoá chính. Ví dụ:
 
 ```ruby
 client = Client.first
 # => #<Client id: 1, first_name: "Lifo">
 ```
 
-The SQL equivalent of the above is:
+Câu lệnh SQL  tương ứng với lệnh trên: 
 
 ```sql
 SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
 ```
 
-The `first` method returns `nil` if no matching record is found and no exception will be raised.
+Phương thức `first` trả về giá trị `nil`  nếu không có bản ghi tương ứng nào và không có exception nào được raise. 
 
-You can pass in a numerical argument to the `first` method to return up to that number of results. For example
+Bạn có thể truyền tham số dạng số vào phương thức `first` để giới hạn số lượng bản ghi trả về. Ví dụ:
 
 ```ruby
 client = Client.first(3)
@@ -195,32 +193,32 @@ client = Client.first(3)
 ]
 ```
 
-The SQL equivalent of the above is:
+Câu lệnh SQL tương ứng với lệnh trên:
 
 ```sql
 SELECT * FROM clients ORDER BY clients.id ASC LIMIT 3
 ```
 
-The `first!` method behaves exactly like `first`, except that it will raise `ActiveRecord::RecordNotFound` if no matching record is found.
+Phương thức `first!`  tương tự như phương thức  `first`, khác ở chỗ `first!` sẽ raise  `ActiveRecord::RecordNotFound` exception nếu không có bản ghi nào được tìm thấy.
 
 #### `last`
 
-The `last` method finds the last record ordered by the primary key. For example:
+Phương thức `last` sẽ tìm bản ghi cuối cùng được sắp xếp bởi khoá chính. Ví dụ:
 
 ```ruby
 client = Client.last
 # => #<Client id: 221, first_name: "Russel">
 ```
 
-The SQL equivalent of the above is:
+câu lệnh SQL tương ứng với lệnh trên:
 
 ```sql
 SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
 ```
 
-The `last` method returns `nil` if no matching record is found and no exception will be raised.
+Phương thức  `last` trả về  `nil` nếu không tìm thấy bản ghi nào và không có exception nào được raise.
 
-You can pass in a numerical argument to the `last` method to return up to that number of results. For example
+Bạn có thể truyền tham số dạng số vào phương thức  `last`  để giới hạn số lượng bản ghi được trả về. Ví dụ:
 
 ```ruby
 client = Client.last(3)
@@ -231,17 +229,17 @@ client = Client.last(3)
 ]
 ```
 
-The SQL equivalent of the above is:
+Câu lệnh SQL tương ứng với lệnh trên:
 
 ```sql
 SELECT * FROM clients ORDER BY clients.id DESC LIMIT 3
 ```
 
-The `last!` method behaves exactly like `last`, except that it will raise `ActiveRecord::RecordNotFound` if no matching record is found.
+Phương thức  `last!`  giống như `last`, khác ở chỗ `last!` sẽ raise `ActiveRecord::RecordNotFound` nếu không bản ghi nào được tìm thấy.
 
 #### `find_by`
 
-The `find_by` method finds the first record matching some conditions. For example:
+Phương thức `find_by` tìm bản ghi đầu tiên tương ứng với một số điều kiện. Ví dụ:
 
 ```ruby
 Client.find_by first_name: 'Lifo'
@@ -251,49 +249,49 @@ Client.find_by first_name: 'Jon'
 # => nil
 ```
 
-It is equivalent to writing:
+bằng với câu lệnh:
 
 ```ruby
 Client.where(first_name: 'Lifo').take
 ```
 
-The SQL equivalent of the above is:
+Câu lệnh SQL tương ứng với 2 câu lệnh trên:
 
 ```sql
 SELECT * FROM clients WHERE (clients.first_name = 'Lifo') LIMIT 1
 ```
 
-The `find_by!` method behaves exactly like `find_by`, except that it will raise `ActiveRecord::RecordNotFound` if no matching record is found. For example:
+Phương thức `find_by!` giống như phương thức `find_by`, ngoài ra  `find_by!`  raise `ActiveRecord::RecordNotFound` nếu không bản ghi nào được tìm thấy. Ví dụ:
 
 ```ruby
 Client.find_by! first_name: 'does not exist'
 # => ActiveRecord::RecordNotFound
 ```
 
-This is equivalent to writing:
+bằng với việc bạn viết như câu lệnh dưới:
 
 ```ruby
 Client.where(first_name: 'does not exist').take!
 ```
 
-### Retrieving Multiple Objects in Batches
+### Retrieving Multiple Objects in Batches ( Lấy nhiều đối tượng)
 
-We often need to iterate over a large set of records, as when we send a newsletter to a large set of users, or when we export data.
+Chúng ta thường phải lặp một tập lớn các bản ghi, ví dụ như khi chúng ta gửi newsletter cho một tập lớn người dùng, hoặc khi chúng ta export dữ liệu. 
 
-This may appear straightforward:
+Cách đơn giản:
 
 ```ruby
-# This is very inefficient when the users table has thousands of rows.
+# Cách này rất hiệu quả khi bảng users có vài nghìn dòng.
 User.all.each do |user|
   NewsMailer.weekly(user).deliver_now
 end
 ```
 
-But this approach becomes increasingly impractical as the table size increases, since `User.all.each` instructs Active Record to fetch _the entire table_ in a single pass, build a model object per row, and then keep the entire array of model objects in memory. Indeed, if we have a large number of records, the entire collection may exceed the amount of memory available.
+Nhưng cách tiếp cận này sẽ thiếu tính thực tế khi kích cỡ của bảng tăng lên. Vì  `User.all.each`  điều khiển Active Record fetch _the entire table_ (toàn bộ bản ghi của bảng ) trong 1 lần, tạo các đối tượng model trên từng dòng dữ liệu, và sau đó lưu giữ mảng các đối tượng model này trong memory. Thực tế, nếu chúng ta có một số lượng lớn các bản ghi, toàn bộ collection có thể sẽ vượt quá dung lượng của memory.
 
-Rails provides two methods that address this problem by dividing records into memory-friendly batches for processing. The first method, `find_each`, retrieves a batch of records and then yields _each_ record to the block individually as a model. The second method, `find_in_batches`, retrieves a batch of records and then yields _the entire batch_ to the block as an array of models.
+Rails cung cấp 2 phương thức giải quyết vấn đề này bằng việc chia các bản ghi vào các memory-friendly batches để xử lý. Phương thức đầu tiên,`find_each`,  lấy ra một loạt các bản ghi và sau đó yields _each_ record to the block individually as a model. Phương thức thứ hai,  `find_in_batches`, lưu trữ một loạt các bản ghi  và sau đó yields _the entire batch_ to the block as an array of models.
 
-TIP: The `find_each` and `find_in_batches` methods are intended for use in the batch processing of a large number of records that wouldn't fit in memory all at once. If you just need to loop over a thousand records the regular find methods are the preferred option.
+TIP: Phương thức  `find_each` và `find_in_batches` được dụng ý để sử dụng cho batch processing một lượng lớn các bản ghi vượt quá memory. Nếu bạn chỉ cần lặp vài nghìn bản ghi thì phương thức finds thông thường là lựa chọn tốt hơn. 
 
 #### `find_each`
 
@@ -315,13 +313,13 @@ end
 
 ##### Options for `find_each`
 
-The `find_each` method accepts most of the options allowed by the regular `find` method, except for `:order` and `:limit`, which are reserved for internal use by `find_each`.
+Phương thức  `find_each` chấp nhận hầu hết các options được chấp nhận bởi  phương thức  `find` ,  trừ  `:order` và `:limit`, which are reserved for internal use by `find_each`.
 
-Three additional options, `:batch_size`, `:begin_at` and `:end_at`, are available as well.
+Ba options  `:batch_size`, `:begin_at` and `:end_at`, are available as well.
 
 **`:batch_size`**
 
-The `:batch_size` option allows you to specify the number of records to be retrieved in each batch, before being passed individually to the block. For example, to retrieve records in batches of 5000:
+`:batch_size` option cho phép bạn chỉ định số lượng bản ghi được lấy ra trong môi batch, trước khi được  passed individually to the block. Ví dụ để lấy 5000 bản ghi vào batch:
 
 ```ruby
 User.find_each(batch_size: 5000) do |user|
@@ -331,9 +329,9 @@ end
 
 **`:begin_at`**
 
-By default, records are fetched in ascending order of the primary key, which must be an integer. The `:begin_at` option allows you to configure the first ID of the sequence whenever the lowest ID is not the one you need. This would be useful, for example, if you wanted to resume an interrupted batch process, provided you saved the last processed ID as a checkpoint.
+Mặc định, các bản ghi được lấy gia theo thứ tự tăng dần của khoá chính, có kiểu integer. `:begin_at` option cho phép bạn chỉ định ID đầu tiên của dãy được lấy ra trong trường hợp bạn không cần ID nhỏ nhất. Ví dụ, nếu bạn muốn resume an interrupted batch process, provided you saved the last processed ID as a checkpoint.
 
-For example, to send newsletters only to users with the primary key starting from 2000, and to retrieve them in batches of 5000:
+Ví dụ, để gửi newsletters cho người dùng với khoá chính bắt đầu từ 2000 và lấy ra trong batches độ lớn 5000 bản ghi.
 
 ```ruby
 User.find_each(begin_at: 2000, batch_size: 5000) do |user|
@@ -341,14 +339,15 @@ User.find_each(begin_at: 2000, batch_size: 5000) do |user|
 end
 ```
 
-Another example would be if you wanted multiple workers handling the same processing queue. You could have each worker handle 10000 records by setting the appropriate `:begin_at` option on each worker.
+Một ví dụ khác, nếu bạn muốn nhiều workers handling the same processing queue. Bạn có thể có mỗi worker xử lý 10000 bản ghi bằng cách chỉ định `:begin_at` option tương ứng cho mỗi worker.
 
 **`:end_at`**
 
-Similar to the `:begin_at` option, `:end_at` allows you to configure the last ID of the sequence whenever the highest ID is not the one you need.
-This would be useful, for example, if you wanted to run a batch process, using a subset of records based on `:begin_at` and `:end_at`
+Tương tự như `:begin_at` option, `:end_at`  cho phép bạn chỉ định ID cuối cùng của chuỗi các bản ghi lấy ra khi bạn không cần lấy tới các bản ghi có ID lớn nhất. 
 
-For example, to send newsletters only to users with the primary key starting from 2000 up to 10000 and to retrieve them in batches of 5000:
+Ví dụ, nếu bạn muốn chạy một batch process, sử dụng tập con các bản ghi dựa trên `:begin_at` và `:end_at`
+
+Ví dụ, bạn muốn gửi newsletters  cho người dùng có khoá chính bắt đầu từ 2000 tới 10000 và oaays chúng theo các batch có độ lớn 5000 bản ghi:
 
 ```ruby
 User.find_each(begin_at: 2000, end_at: 10000, batch_size: 5000) do |user|
@@ -358,10 +357,10 @@ end
 
 #### `find_in_batches`
 
-The `find_in_batches` method is similar to `find_each`, since both retrieve batches of records. The difference is that `find_in_batches` yields _batches_ to the block as an array of models, instead of individually. The following example will yield to the supplied block an array of up to 1000 invoices at a time, with the final block containing any remaining invoices:
+Phương thức `find_in_batches` gần giống như `find_each`, cả hai đều  retrieve batches of records. Điểm khấc biệt ở đây là `find_in_batches` yields _batches_ to the block as an array of models, instead of individually. The following example will yield to the supplied block an array of up to 1000 invoices at a time, with the final block containing any remaining invoices:
 
 ```ruby
-# Give add_invoices an array of 1000 invoices at a time
+# Gán cho add_invoices một mảng 1000 invoices trong một lần
 Invoice.find_in_batches do |invoices|
   export.add_invoices(invoices)
 end
@@ -369,36 +368,37 @@ end
 
 ##### Options for `find_in_batches`
 
-The `find_in_batches` method accepts the same `:batch_size`, `:begin_at` and `:end_at` options as `find_each`.
+Phương thức `find_in_batches` chấp nhận các option  `:batch_size`, `:begin_at` and `:end_at` giống như `find_each`.
 
-Conditions
+Conditions ( Điều kiện)
 ----------
 
-The `where` method allows you to specify conditions to limit the records returned, representing the `WHERE`-part of the SQL statement. Conditions can either be specified as a string, array, or hash.
+Phương thức `where` cho phép bạn định rõ điều kiện trả về của các bản ghi, representing the `WHERE`-part of the SQL statement. Các điều kiện có thể được chỉ định bằng chuỗi ( string), mảng (array) hoặc bảng băm ( hash).
 
-### Pure String Conditions
+### Pure String Conditions ( Điều kiện giới hạn bằng chuỗi)
 
-If you'd like to add conditions to your find, you could just specify them in there, just like `Client.where("orders_count = '2'")`. This will find all clients where the `orders_count` field's value is 2.
+Nếu bạn muốn thêm điều kiện, bạn chỉ cần xác định nó , giống như `Client.where("orders_count = '2'")` sẽ tìm toàn bộ các client có giá trị của trường `orders_count` bằng 2.
 
-WARNING: Building your own conditions as pure strings can leave you vulnerable to SQL injection exploits. For example, `Client.where("first_name LIKE '%#{params[:first_name]}%'")` is not safe. See the next section for the preferred way to handle conditions using an array.
+WARNING: Xây dựng các điều kiện bằng string có thể gây ra lỗ hổng SQL injection. Ví dụ
+ câu tìm kiếm `Client.where("first_name LIKE '%#{params[:first_name]}%'")` không an toàn. Xem phần tiếp kế tiếp để biết về cách xử lý tốt hơn các điều kiện sử dụng Array.
 
 ### Array Conditions
 
-Now what if that number could vary, say as an argument from somewhere? The find would then take the form:
+Trong trường hợp tham số được truyền vào từ nơi khác  ( giá trị của tham số thay đổi), câu lệnh tìm kiếm sẽ có dạng như dưới:
 
 ```ruby
 Client.where("orders_count = ?", params[:orders])
 ```
 
-Active Record will go through the first element in the conditions value and any additional elements will replace the question marks `(?)` in the first element.
+Active Record sẽ will go through the first element in the conditions value and any additional elements will replace the question marks `(?)` in the first element.
 
-If you want to specify multiple conditions:
+Nếu bạn muốn chỉ định nhiều điều kiện:
 
 ```ruby
 Client.where("orders_count = ? AND locked = ?", params[:orders], false)
 ```
 
-In this example, the first question mark will be replaced with the value in `params[:orders]` and the second will be replaced with the SQL representation of `false`, which depends on the adapter.
+Trong ví dụ này, dấu hỏi chấm (?) đầu tiên sẽ được thay thế bằng giá trị của  `params[:orders]`  và dấu hỏi chấm thứ hai sẽ được thay thế bằng and the second will be replaced with the SQL representation of `false`, phụ thuộc vào hệ quản trị cơ sở dữ liệu.
 
 This code is highly preferable:
 
