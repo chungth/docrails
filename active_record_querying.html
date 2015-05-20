@@ -165,10 +165,10 @@
 
   <div id="feature">
     <div class="wrapper">
-      <p>** Không nên đọc file này trên GITHUB,  Các hướng dẫn phiên bản tiếng Việt được công khai trên trang  <a href="http://railsguides.tranhuychung.com">http://railsguides.tranhuychung.com</a>. **</p><h2>Active Record Query Interface</h2><p>Hướng dẫn này bao gồm các cách thức khác nhau để lấy dữ liệu từ database sử dụng Active Record.</p><p>Sau khi đọc hướng dẫn này, bạn sẽ biết: </p>
+      <p><strong>Không nên đọc file này trên GITHUB,  Các hướng dẫn phiên bản tiếng Việt được công khai trên trang  <a href="http://chungth.github.io/docrails">http://chungth.github.io/docrails</a>.</strong></p><h2>Active Record Query Interface</h2><p>Hướng dẫn này bao gồm các cách thức khác nhau để lấy dữ liệu từ database sử dụng Active Record.</p><p>Sau khi đọc hướng dẫn này, bạn sẽ biết: </p>
 <ul>
 <li>Cách thức tìm các bản ghi sử dụng các method và điều kiện khác nhau.</li>
-<li>Cách thức xác định thứ tự, lấy ra các thuộc tính, grouping, và and other properties of the found records.</li>
+<li>Cách thức xác định thứ tự, lấy ra các thuộc tính, gsrouping, và and other properties of the found records.</li>
 <li>Cách thức sử dụng kỹ thuật eager loading để giảm thiểu số lượng truy vấn vào database cần thiết  để lấy dữ liệu. </li>
 <li>Cách sử dụng dynamic finders methods.</li>
 <li>Cách dùng method chaining để dùng kết hợp các phương thức của ActiveRecord.</li>
@@ -199,8 +199,8 @@
 <li><a href="#not-conditions">NOT Conditions</a></li>
 </ul>
 </li>
-<li><a href="#ordering">Ordering</a></li>
-<li><a href="#selecting-specific-fields">Selecting Specific Fields</a></li>
+<li><a href="#ordering-s%E1%BA%AFp-x%E1%BA%BFp">Ordering ( Sắp xếp)</a></li>
+<li><a href="#selecting-specific-fields-l%E1%BB%B1a-ch%E1%BB%8Dn-c%C3%A1c-tr%C6%B0%E1%BB%9Dng-x%C3%A1c-%C4%91%E1%BB%8Bnh">Selecting Specific Fields ( Lựa chọn các trường xác định)</a></li>
 <li><a href="#limit-and-offset">Limit and Offset</a></li>
 <li>
 <a href="#group">Group</a>
@@ -573,7 +573,7 @@ end
 
 </pre>
 </div>
-<p><strong><code>:begin_at</code></strong></p><p>Mặc định, các bản ghi được lấy gia theo thứ tự tăng dần của khoá chính, có kiểu integer. <code>:begin_at</code> option cho phép bạn chỉ định ID đầu tiên của dãy được lấy ra trong trường hợp bạn không cần ID nhỏ nhất. Ví dụ, nếu bạn muốn resume an interrupted batch process, provided you saved the last processed ID as a checkpoint.</p><p>Ví dụ, để gửi newsletters cho người dùng với khoá chính bắt đầu từ 2000 và lấy ra trong batches độ lớn 5000 bản ghi.</p><div class="code_container">
+<p><strong><code>:begin_at</code></strong></p><p>Mặc định, các bản ghi được lấy ra theo thứ tự tăng dần của khoá chính, có kiểu integer. <code>:begin_at</code> option cho phép bạn chỉ định ID đầu tiên của dãy được lấy ra trong trường hợp bạn không cần ID nhỏ nhất. Ví dụ, nếu bạn muốn resume an interrupted batch process, provided you saved the last processed ID as a checkpoint.</p><p>Ví dụ, để gửi newsletters cho người dùng với khoá chính bắt đầu từ 2000 và lấy ra trong batches độ lớn 5000 bản ghi.</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 User.find_each(begin_at: 2000, batch_size: 5000) do |user|
   NewsMailer.weekly(user).deliver_now
@@ -625,63 +625,63 @@ Client.where("orders_count = #{params[:orders]}")
 
 </pre>
 </div>
-<p>because of argument safety. Putting the variable directly into the conditions string will pass the variable to the database <strong>as-is</strong>. This means that it will be an unescaped variable directly from a user who may have malicious intent. If you do this, you put your entire database at risk because once a user finds out they can exploit your database they can do just about anything to it. Never ever put your arguments directly inside the conditions string.</p><div class="info"><p>For more information on the dangers of SQL injection, see the <a href="security.html#sql-injection">Ruby on Rails Security Guide</a>.</p></div><h5 id="placeholder-conditions">2.2.1 Placeholder Conditions</h5><p>Similar to the <code>(?)</code> replacement style of params, you can also specify keys/values hash in your array conditions:</p><div class="code_container">
+<p>because of argument safety. Putting the variable directly into the conditions string will pass the variable to the database <strong>as-is</strong>. This means that it will be an unescaped variable directly from a user who may have malicious intent. If you do this, you put your entire database at risk because once a user finds out they can exploit your database they can do just about anything to it. Never ever put your arguments directly inside the conditions string.</p><div class="info"><p>Thông tin thêm về sự nguy hiểm của SQL injection có thể xem tại  <a href="security.html#sql-injection">Ruby on Rails Security Guide</a>.</p></div><h5 id="placeholder-conditions">2.2.1 Placeholder Conditions</h5><p>Tương tự như kiểu thay thế params <code>(?)</code>, bạn cũng có thể chỉ định theo kiểu bảng băm keys/value trong mảng các điều kiện :</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.where("created_at &gt;= :start_date AND created_at &lt;= :end_date",
   {start_date: params[:start_date], end_date: params[:end_date]})
 
 </pre>
 </div>
-<p>This makes for clearer readability if you have a large number of variable conditions.</p><h4 id="hash-conditions">2.3 Hash Conditions</h4><p>Active Record also allows you to pass in hash conditions which can increase the readability of your conditions syntax. With hash conditions, you pass in a hash with keys of the fields you want conditionalised and the values of how you want to conditionalise them:</p><div class="note"><p>Only equality, range and subset checking are possible with Hash conditions.</p></div><h5 id="equality-conditions">2.3.1 Equality Conditions</h5><div class="code_container">
+<p>kiểu truyền tham số này giúp source code của bạn dễ đọc hơn nếu bạn có một số lượng lớn các điều kiện khác nhau. </p><h4 id="hash-conditions">2.3 Hash Conditions</h4><p>Active Record also allows you to pass in hash conditions which can increase the readability of your conditions syntax. With hash conditions, you pass in a hash with keys of the fields you want conditionalised and the values of how you want to conditionalise them:</p><div class="note"><p>Only equality, range and subset checking are possible with Hash conditions.</p></div><h5 id="equality-conditions">2.3.1 Equality Conditions</h5><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.where(locked: true)
 
 </pre>
 </div>
-<p>The field name can also be a string:</p><div class="code_container">
+<p>Tên trường cũng có thể viết dưới dạng string:</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.where('locked' =&gt; true)
 
 </pre>
 </div>
-<p>In the case of a belongs_to relationship, an association key can be used to specify the model if an Active Record object is used as the value. This method works with polymorphic relationships as well.</p><div class="code_container">
+<p>Trong trường hợp quan hệ belongs_to, an association key can be used to specify the model if an Active Record object is used as the value. This method works with polymorphic relationships as well.</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Article.where(author: author)
 Author.joins(:articles).where(articles: { author: author })
 
 </pre>
 </div>
-<div class="note"><p>The values cannot be symbols. For example, you cannot do <code>Client.where(status: :active)</code>.</p></div><h5 id="range-conditions">2.3.2 Range Conditions</h5><div class="code_container">
+<div class="note"><p>Giá trị không thể là symbols.  Ví dụ bạn không thể viết  <code>Client.where(status: :active)</code>.</p></div><h5 id="range-conditions">2.3.2 Range Conditions</h5><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.where(created_at: (Time.now.midnight - 1.day)..Time.now.midnight)
 
 </pre>
 </div>
-<p>This will find all clients created yesterday by using a <code>BETWEEN</code> SQL statement:</p><div class="code_container">
+<p>Câu lệnh trên sẽ tìm toàn bộ các clients được tạo hôm qua bằng cách sử dụng lệnh SQL <code>BETWEEN</code>:</p><div class="code_container">
 <pre class="brush: sql; gutter: false; toolbar: false">
 SELECT * FROM clients WHERE (clients.created_at BETWEEN '2008-12-21 00:00:00' AND '2008-12-22 00:00:00')
 
 </pre>
 </div>
-<p>This demonstrates a shorter syntax for the examples in <a href="#array-conditions">Array Conditions</a></p><h5 id="subset-conditions">2.3.3 Subset Conditions</h5><p>If you want to find records using the <code>IN</code> expression you can pass an array to the conditions hash:</p><div class="code_container">
+<p>This demonstrates a shorter syntax for the examples in <a href="#array-conditions">Array Conditions</a></p><h5 id="subset-conditions">2.3.3 Subset Conditions</h5><p>Nếu bạn muốn tìm các bản ghi sử dụng câu lệnh <code>IN</code> bạn có thể truyền mảng vào bảng băm các điều kiện :</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.where(orders_count: [1,3,5])
 
 </pre>
 </div>
-<p>This code will generate SQL like this:</p><div class="code_container">
+<p>Câu lệnh trên sẽ sinh ra câu lệnh SQL như bên dưới:</p><div class="code_container">
 <pre class="brush: sql; gutter: false; toolbar: false">
 SELECT * FROM clients WHERE (clients.orders_count IN (1,3,5))
 
 </pre>
 </div>
-<h4 id="not-conditions">2.4 NOT Conditions</h4><p><code>NOT</code> SQL queries can be built by <code>where.not</code>.</p><div class="code_container">
+<h4 id="not-conditions">2.4 NOT Conditions</h4><p>Câu lệnh <code>NOT</code> trong truy vấn SQL có thể được xây dựng bằng lệnh <code>where.not</code>.</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Article.where.not(author: author)
 
 </pre>
 </div>
-<p>In other words, this query can be generated by calling <code>where</code> with no argument, then immediately chain with <code>not</code> passing <code>where</code> conditions.</p><h3 id="ordering">3 Ordering</h3><p>To retrieve records from the database in a specific order, you can use the <code>order</code> method.</p><p>For example, if you're getting a set of records and want to order them in ascending order by the <code>created_at</code> field in your table:</p><div class="code_container">
+<p>Nói cách khác, truy vấn này có thể được sinh ra bằng cách gọi lệnh <code>where</code> không có tham số đầu vào, then immediately chain with <code>not</code> passing <code>where</code> conditions.</p><h3 id="ordering-sắp-xếp">3 Ordering ( Sắp xếp)</h3><p>Để lấy các bản ghi từ cơ sở dữ liệu theo một thứ tự xác định, bạn có thể dùng phương thức <code>order</code></p><p>Ví dụ, nếu bạn lấy một tập các bản ghi và muốn sắp xếp chúng theo thứ tự tăng dần của trường <code>created_at</code>  trong bảng:</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.order(:created_at)
 # OR
@@ -689,7 +689,7 @@ Client.order("created_at")
 
 </pre>
 </div>
-<p>You could specify <code>ASC</code> or <code>DESC</code> as well:</p><div class="code_container">
+<p>Bạn cũng có thể chỉ định <code>ASC</code> hoặc <code>DESC</code>:</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.order(created_at: :desc)
 # OR
@@ -701,7 +701,7 @@ Client.order("created_at ASC")
 
 </pre>
 </div>
-<p>Or ordering by multiple fields:</p><div class="code_container">
+<p>Hoặc sắp xếp theo nhiều trường :</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.order(orders_count: :asc, created_at: :desc)
 # OR
@@ -713,44 +713,44 @@ Client.order("orders_count ASC", "created_at DESC")
 
 </pre>
 </div>
-<p>If you want to call <code>order</code> multiple times e.g. in different context, new order will append previous one:</p><div class="code_container">
+<p>Nếu bạn muốn gọi phương thức  <code>order</code> nhiều lần. Ví dụ trong những ngữ cảnh khác nhau thứ tự sắp xếp mới sẽ được set thêm vào thứ tự trước đó:</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.order("orders_count ASC").order("created_at DESC")
 # SELECT * FROM clients ORDER BY orders_count ASC, created_at DESC
 
 </pre>
 </div>
-<h3 id="selecting-specific-fields">4 Selecting Specific Fields</h3><p>By default, <code>Model.find</code> selects all the fields from the result set using <code>select *</code>.</p><p>To select only a subset of fields from the result set, you can specify the subset via the <code>select</code> method.</p><p>For example, to select only <code>viewable_by</code> and <code>locked</code> columns:</p><div class="code_container">
+<h3 id="selecting-specific-fields-lựa-chọn-các-trường-xác-định">4 Selecting Specific Fields ( Lựa chọn các trường xác định)</h3><p>Mặc định, <code>Model.find</code>  lựa chọn toàn bộ các trường trong tập kết quả bằng cách dùng <code>select *</code>.</p><p>Để lựa chọn một tập các trường từ tập kết quả, bạn có thể xác định tập các trường đó thông qua phương thức <code>select</code> .</p><p>Ví dụ, chỉ lựa chọn cột <code>viewable_by</code> và <code>locked</code>:</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.select("viewable_by, locked")
 
 </pre>
 </div>
-<p>The SQL query used by this find call will be somewhat like:</p><div class="code_container">
+<p>Câu lệnh truy vấn SQL được sinh từ câu lệnh trên có thể như câu lệnh bên dưới:</p><div class="code_container">
 <pre class="brush: sql; gutter: false; toolbar: false">
 SELECT viewable_by, locked FROM clients
 
 </pre>
 </div>
-<p>Be careful because this also means you're initializing a model object with only the fields that you've selected. If you attempt to access a field that is not in the initialized record you'll receive:</p><div class="code_container">
+<p>Hãy cẩn thận, bởi vì điều đó cũng có nghĩa là bạn chỉ khởi tạo đối tượng model với các trường bạn đã lựa chọn. Nếu như bạn muốn truy cập vào một trường không có trong các trường được khởi tạo bạn có thể nhận được exception:</p><div class="code_container">
 <pre class="brush: plain; gutter: false; toolbar: false">
 ActiveModel::MissingAttributeError: missing attribute: &lt;attribute&gt;
 
 </pre>
 </div>
-<p>Where <code>&lt;attribute&gt;</code> is the attribute you asked for. The <code>id</code> method will not raise the <code>ActiveRecord::MissingAttributeError</code>, so just be careful when working with associations because they need the <code>id</code> method to function properly.</p><p>If you would like to only grab a single record per unique value in a certain field, you can use <code>distinct</code>:</p><div class="code_container">
+<p>trong đó  <code>&lt;attribute&gt;</code> là thuộc tính ( attribute) bạn yêu cầu. Phương thức <code>id</code> sẽ không raise  <code>ActiveRecord::MissingAttributeError</code>, nên hãy cẩn thận khi dùng với associations vì các phương thức này cần <code>id</code> để hoạt động đúng.</p><p>If you would like to only grab a single record per unique value in a certain field, you can use <code>distinct</code>:</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 Client.select(:name).distinct
 
 </pre>
 </div>
-<p>This would generate SQL like:</p><div class="code_container">
+<p>Câu lệnh trên sẽ sinh ra câu lệnh SQL như phía dưới</p><div class="code_container">
 <pre class="brush: sql; gutter: false; toolbar: false">
 SELECT DISTINCT name FROM clients
 
 </pre>
 </div>
-<p>You can also remove the uniqueness constraint:</p><div class="code_container">
+<p>Bạn cũng có thể xoá bỏ uniqueness constraint:</p><div class="code_container">
 <pre class="brush: ruby; gutter: false; toolbar: false">
 query = Client.select(:name).distinct
 # =&gt; Returns unique names
