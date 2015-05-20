@@ -1,4 +1,4 @@
-** Không nên đọc file này trên GITHUB,  Các hướng dẫn phiên bản tiếng Việt được công khai trên trang  http://railsguides.tranhuychung.com. **
+**Không nên đọc file này trên GITHUB,  Các hướng dẫn phiên bản tiếng Việt được công khai trên trang  http://chungth.github.io/docrails.**
 
 Active Record Query Interface
 =============================
@@ -8,7 +8,7 @@ Hướng dẫn này bao gồm các cách thức khác nhau để lấy dữ li�
 Sau khi đọc hướng dẫn này, bạn sẽ biết: 
 
 * Cách thức tìm các bản ghi sử dụng các method và điều kiện khác nhau.
-* Cách thức xác định thứ tự, lấy ra các thuộc tính, grouping, và and other properties of the found records.
+* Cách thức xác định thứ tự, lấy ra các thuộc tính, gsrouping, và and other properties of the found records.
 * Cách thức sử dụng kỹ thuật eager loading để giảm thiểu số lượng truy vấn vào database cần thiết  để lấy dữ liệu. 
 * Cách sử dụng dynamic finders methods.
 * Cách dùng method chaining để dùng kết hợp các phương thức của ActiveRecord.
@@ -329,7 +329,7 @@ end
 
 **`:begin_at`**
 
-Mặc định, các bản ghi được lấy gia theo thứ tự tăng dần của khoá chính, có kiểu integer. `:begin_at` option cho phép bạn chỉ định ID đầu tiên của dãy được lấy ra trong trường hợp bạn không cần ID nhỏ nhất. Ví dụ, nếu bạn muốn resume an interrupted batch process, provided you saved the last processed ID as a checkpoint.
+Mặc định, các bản ghi được lấy ra theo thứ tự tăng dần của khoá chính, có kiểu integer. `:begin_at` option cho phép bạn chỉ định ID đầu tiên của dãy được lấy ra trong trường hợp bạn không cần ID nhỏ nhất. Ví dụ, nếu bạn muốn resume an interrupted batch process, provided you saved the last processed ID as a checkpoint.
 
 Ví dụ, để gửi newsletters cho người dùng với khoá chính bắt đầu từ 2000 và lấy ra trong batches độ lớn 5000 bản ghi.
 
@@ -414,18 +414,18 @@ Client.where("orders_count = #{params[:orders]}")
 
 because of argument safety. Putting the variable directly into the conditions string will pass the variable to the database **as-is**. This means that it will be an unescaped variable directly from a user who may have malicious intent. If you do this, you put your entire database at risk because once a user finds out they can exploit your database they can do just about anything to it. Never ever put your arguments directly inside the conditions string.
 
-TIP: For more information on the dangers of SQL injection, see the [Ruby on Rails Security Guide](security.html#sql-injection).
+TIP: Thông tin thêm về sự nguy hiểm của SQL injection có thể xem tại  [Ruby on Rails Security Guide](security.html#sql-injection).
 
 #### Placeholder Conditions
 
-Similar to the `(?)` replacement style of params, you can also specify keys/values hash in your array conditions:
+Tương tự như kiểu thay thế params `(?)`, bạn cũng có thể chỉ định theo kiểu bảng băm keys/value trong mảng các điều kiện :
 
 ```ruby
 Client.where("created_at >= :start_date AND created_at <= :end_date",
   {start_date: params[:start_date], end_date: params[:end_date]})
 ```
 
-This makes for clearer readability if you have a large number of variable conditions.
+kiểu truyền tham số này giúp source code của bạn dễ đọc hơn nếu bạn có một số lượng lớn các điều kiện khác nhau. 
 
 ### Hash Conditions
 
@@ -438,21 +438,20 @@ NOTE: Only equality, range and subset checking are possible with Hash conditions
 ```ruby
 Client.where(locked: true)
 ```
-
-The field name can also be a string:
+Tên trường cũng có thể viết dưới dạng string:
 
 ```ruby
 Client.where('locked' => true)
 ```
 
-In the case of a belongs_to relationship, an association key can be used to specify the model if an Active Record object is used as the value. This method works with polymorphic relationships as well.
+Trong trường hợp quan hệ belongs_to, an association key can be used to specify the model if an Active Record object is used as the value. This method works with polymorphic relationships as well.
 
 ```ruby
 Article.where(author: author)
 Author.joins(:articles).where(articles: { author: author })
 ```
 
-NOTE: The values cannot be symbols. For example, you cannot do `Client.where(status: :active)`.
+NOTE:  Giá trị không thể là symbols.  Ví dụ bạn không thể viết  `Client.where(status: :active)`.
 
 #### Range Conditions
 
@@ -460,7 +459,7 @@ NOTE: The values cannot be symbols. For example, you cannot do `Client.where(sta
 Client.where(created_at: (Time.now.midnight - 1.day)..Time.now.midnight)
 ```
 
-This will find all clients created yesterday by using a `BETWEEN` SQL statement:
+Câu lệnh trên sẽ tìm toàn bộ các clients được tạo hôm qua bằng cách sử dụng lệnh SQL `BETWEEN`:
 
 ```sql
 SELECT * FROM clients WHERE (clients.created_at BETWEEN '2008-12-21 00:00:00' AND '2008-12-22 00:00:00')
@@ -470,13 +469,13 @@ This demonstrates a shorter syntax for the examples in [Array Conditions](#array
 
 #### Subset Conditions
 
-If you want to find records using the `IN` expression you can pass an array to the conditions hash:
+Nếu bạn muốn tìm các bản ghi sử dụng câu lệnh `IN` bạn có thể truyền mảng vào bảng băm các điều kiện :
 
 ```ruby
 Client.where(orders_count: [1,3,5])
 ```
 
-This code will generate SQL like this:
+Câu lệnh trên sẽ sinh ra câu lệnh SQL như bên dưới:
 
 ```sql
 SELECT * FROM clients WHERE (clients.orders_count IN (1,3,5))
@@ -484,20 +483,20 @@ SELECT * FROM clients WHERE (clients.orders_count IN (1,3,5))
 
 ### NOT Conditions
 
-`NOT` SQL queries can be built by `where.not`.
+Câu lệnh `NOT` trong truy vấn SQL có thể được xây dựng bằng lệnh `where.not`.
 
 ```ruby
 Article.where.not(author: author)
 ```
 
-In other words, this query can be generated by calling `where` with no argument, then immediately chain with `not` passing `where` conditions.
+Nói cách khác, truy vấn này có thể được sinh ra bằng cách gọi lệnh `where` không có tham số đầu vào, then immediately chain with `not` passing `where` conditions.
 
-Ordering
+Ordering ( Sắp xếp)
 --------
 
-To retrieve records from the database in a specific order, you can use the `order` method.
+Để lấy các bản ghi từ cơ sở dữ liệu theo một thứ tự xác định, bạn có thể dùng phương thức `order`
 
-For example, if you're getting a set of records and want to order them in ascending order by the `created_at` field in your table:
+Ví dụ, nếu bạn lấy một tập các bản ghi và muốn sắp xếp chúng theo thứ tự tăng dần của trường `created_at`  trong bảng:
 
 ```ruby
 Client.order(:created_at)
@@ -505,7 +504,7 @@ Client.order(:created_at)
 Client.order("created_at")
 ```
 
-You could specify `ASC` or `DESC` as well:
+Bạn cũng có thể chỉ định `ASC` hoặc `DESC`:
 
 ```ruby
 Client.order(created_at: :desc)
@@ -517,7 +516,7 @@ Client.order("created_at DESC")
 Client.order("created_at ASC")
 ```
 
-Or ordering by multiple fields:
+Hoặc sắp xếp theo nhiều trường :
 
 ```ruby
 Client.order(orders_count: :asc, created_at: :desc)
@@ -529,39 +528,39 @@ Client.order("orders_count ASC, created_at DESC")
 Client.order("orders_count ASC", "created_at DESC")
 ```
 
-If you want to call `order` multiple times e.g. in different context, new order will append previous one:
+Nếu bạn muốn gọi phương thức  `order` nhiều lần. Ví dụ trong những ngữ cảnh khác nhau thứ tự sắp xếp mới sẽ được set thêm vào thứ tự trước đó:
 
 ```ruby
 Client.order("orders_count ASC").order("created_at DESC")
 # SELECT * FROM clients ORDER BY orders_count ASC, created_at DESC
 ```
 
-Selecting Specific Fields
+Selecting Specific Fields ( Lựa chọn các trường xác định)
 -------------------------
 
-By default, `Model.find` selects all the fields from the result set using `select *`.
+Mặc định, `Model.find`  lựa chọn toàn bộ các trường trong tập kết quả bằng cách dùng `select *`.
 
-To select only a subset of fields from the result set, you can specify the subset via the `select` method.
+Để lựa chọn một tập các trường từ tập kết quả, bạn có thể xác định tập các trường đó thông qua phương thức `select` .
 
-For example, to select only `viewable_by` and `locked` columns:
+Ví dụ, chỉ lựa chọn cột `viewable_by` và `locked`:
 
 ```ruby
 Client.select("viewable_by, locked")
 ```
 
-The SQL query used by this find call will be somewhat like:
+Câu lệnh truy vấn SQL được sinh từ câu lệnh trên có thể như câu lệnh bên dưới:
 
 ```sql
 SELECT viewable_by, locked FROM clients
 ```
 
-Be careful because this also means you're initializing a model object with only the fields that you've selected. If you attempt to access a field that is not in the initialized record you'll receive:
+Hãy cẩn thận, bởi vì điều đó cũng có nghĩa là bạn chỉ khởi tạo đối tượng model với các trường bạn đã lựa chọn. Nếu như bạn muốn truy cập vào một trường không có trong các trường được khởi tạo bạn có thể nhận được exception:
 
 ```bash
 ActiveModel::MissingAttributeError: missing attribute: <attribute>
 ```
 
-Where `<attribute>` is the attribute you asked for. The `id` method will not raise the `ActiveRecord::MissingAttributeError`, so just be careful when working with associations because they need the `id` method to function properly.
+trong đó  `<attribute>` là thuộc tính ( attribute) bạn yêu cầu. Phương thức `id` sẽ không raise  `ActiveRecord::MissingAttributeError`, nên hãy cẩn thận khi dùng với associations vì các phương thức này cần `id` để hoạt động đúng.
 
 If you would like to only grab a single record per unique value in a certain field, you can use `distinct`:
 
@@ -569,13 +568,13 @@ If you would like to only grab a single record per unique value in a certain fie
 Client.select(:name).distinct
 ```
 
-This would generate SQL like:
+Câu lệnh trên sẽ sinh ra câu lệnh SQL như phía dưới
 
 ```sql
 SELECT DISTINCT name FROM clients
 ```
 
-You can also remove the uniqueness constraint:
+Bạn cũng có thể xoá bỏ uniqueness constraint:
 
 ```ruby
 query = Client.select(:name).distinct

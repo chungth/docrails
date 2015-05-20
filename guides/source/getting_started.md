@@ -1,34 +1,32 @@
-**DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON http://guides.rubyonrails.org.**
+**KHÔNG NÊN ĐỌC FILE NÀY TRÊN GITHUB, HƯỚNG DẪN BẰNG TIẾNG VIỆT ĐƯỢC CÔNG KHAI TRÊN TRANG http://chungth.github.com/docrails**
 
-Getting Started with Rails
+Khởi đầu với Rails
 ==========================
 
-This guide covers getting up and running with Ruby on Rails.
+Hướng dẫn này bao gồm các phần khởi đầu với Ruby on Rails. 
 
-After reading this guide, you will know:
+Sau khi đọc hướng dẫn này bạn sẽ biết cách:
 
-* How to install Rails, create a new Rails application, and connect your
-  application to a database.
-* The general layout of a Rails application.
-* The basic principles of MVC (Model, View, Controller) and RESTful design.
-* How to quickly generate the starting pieces of a Rails application.
-
+* Cài đặt Rails và tạo một ứng dụng Rails mới, và kết nối ứng dụng của bạn với database.
+* Layout chuẩn của một ứng dụng Rails.
+* Các nguyên lý cơ bản của mô hình MVC ( Model, View, Controller) và RESTful design.
+* Cách nhanh chóng sinh các thành phần của một ứng dụng Rails.
 --------------------------------------------------------------------------------
 
 Guide Assumptions
 -----------------
 
-This guide is designed for beginners who want to get started with a Rails
-application from scratch. It does not assume that you have any prior experience
-with Rails. However, to get the most out of it, you need to have some
-prerequisites installed:
+Hướng dẫn này được thiết kế cho những người mới bắt đâu, những người muốn bắt đầu với một ứng dụng Rails từ đầu. 
+Bạn không cần thiết biết về Rails từ trường khi đọc hướng dẫn này. 
+Tuy nhiên, để  to get the most out of it, bạn cần có một số cài đặt trước:
 
-* The [Ruby](https://www.ruby-lang.org/en/downloads) language version 2.2.2 or newer.
-* The [RubyGems](https://rubygems.org) packaging system, which is installed with Ruby
-  versions 1.9 and later. To learn more about RubyGems, please read the [RubyGems Guides](http://guides.rubygems.org).
-* A working installation of the [SQLite3 Database](https://www.sqlite.org).
+*  Ngôn ngữ [Ruby](https://www.ruby-lang.org/en/downloads) language version 2.2.2 hoặc mới hơn.
+*  Hệ thống các gói [RubyGems](https://rubygems.org) được cài đặt cùng với Ruby
+  versions 1.9 hoặc mới hơn. 
+  Để học về RubyGems, bạn nên đọc về [RubyGems Guides](http://guides.rubygems.org).
+* Một bản cài đặt của hệ quản trị cơ sở dữ liệu [SQLite3](https://www.sqlite.org).
 
-Rails is a web application framework running on the Ruby programming language.
+Rails là môt web framework chạy trên ngôn ngữ Ruby.
 If you have no prior experience with Ruby, you will find a very steep learning
 curve diving straight into Rails. There are several curated lists of online resources
 for learning Ruby:
